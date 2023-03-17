@@ -4,8 +4,10 @@ import Vapor
 struct TodoController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let todos = routes.grouped("todos")
+
         todos.get(use: index)
         todos.post(use: create)
+
         todos.group(":todoID") { todo in
             todo.delete(use: delete)
         }
@@ -17,7 +19,9 @@ struct TodoController: RouteCollection {
 
     func create(req: Request) async throws -> Todo {
         let todo = try req.content.decode(Todo.self)
+
         try await todo.save(on: req.db)
+
         return todo
     }
 
@@ -25,7 +29,9 @@ struct TodoController: RouteCollection {
         guard let todo = try await Todo.find(req.parameters.get("todoID"), on: req.db) else {
             throw Abort(.notFound)
         }
+
         try await todo.delete(on: req.db)
+
         return .noContent
     }
 }

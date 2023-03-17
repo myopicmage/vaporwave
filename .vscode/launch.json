@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug Run",
+      "program": "${workspaceFolder:trackertracker}/.build/debug/Run",
+      "args": [],
+      "cwd": "${workspaceFolder:trackertracker}",
+      "preLaunchTask": "swift: Build Debug Run"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Release Run",
+      "program": "${workspaceFolder:trackertracker}/.build/release/Run",
+      "args": [],
+      "cwd": "${workspaceFolder:trackertracker}",
+      "preLaunchTask": "swift: Build Release Run"
+    }
+  ]
+}
