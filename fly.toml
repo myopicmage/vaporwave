@@ -11,9 +11,6 @@ processes = []
 [experimental]
 auto_rollback = true
 
-[deploy]
-release_command = "migrate -y"
-
 [[services]]
   http_checks = []
   internal_port = 8080
