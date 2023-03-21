@@ -3,7 +3,6 @@ import Vapor
 
 func routes(_ app: Application) throws {
     app.get { req async throws -> View in
-        req.logger.debug("Rendering /")
         return try await req.view.render("index", ["title": "Hello Vapor!"])
     }
 
