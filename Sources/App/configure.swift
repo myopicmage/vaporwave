@@ -34,6 +34,8 @@ public func configure(_ app: Application) async throws {
 
     app.migrations.add(Category.Migration())
     app.migrations.add(Task.Migration())
+    app.migrations.add(User.Migration())
+    app.migrations.add(UserToken.Migration())
 
     app.logger.info("Attempting to run migrations")
     try await app.autoMigrate()

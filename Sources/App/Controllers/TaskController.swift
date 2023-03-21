@@ -3,7 +3,10 @@ import Vapor
 
 struct TaskController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
-        let tasks = routes.grouped("tasks")
+        let tasks = routes
+            .grouped(UserTokenAuthenticator())
+            .grouped(User.guardMiddleware())
+            .grouped("tasks")
 
         tasks.get(use: index)
         tasks.post(use: create)
