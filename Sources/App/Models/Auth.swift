@@ -15,12 +15,6 @@ extension User {
   }
 }
 
-extension User: SessionAuthenticatable {
-  var sessionID: String {
-    self.username
-  }
-}
-
 extension User: ModelAuthenticatable, ModelCredentialsAuthenticatable {
   static let usernameKey = \User.$username
   static let passwordHashKey = \User.$password

@@ -20,11 +20,17 @@ struct AuthController: RouteCollection {
       password: Bcrypt.hash(create.password)
     )
 
-    try await user.save(on: req.db)
+    do {
+      try await user.save(on: req.db)
 
-    let payload = try UserToken(user: user)
+      let payload = try UserToken(user: user)
 
-    return ClientTokenResponse(token: try req.jwt.sign(payload))
+      return ClientTokenResponse(token: try req.jwt.sign(payload))
+    } catch let error as DatabaseError where error.isConstraintFailure {
+      throw Abort(.badRequest, reason: "Username is taken")
+    } catch {
+      throw Abort(.badRequest, reason: "Unknown error: \(error)")
+    }
   }
 
   func login(req: Request) async throws -> ClientTokenResponse {
@@ -36,12 +42,14 @@ struct AuthController: RouteCollection {
 
   func boot(routes: RoutesBuilder) throws {
     let authRoutes = routes
-      .grouped(User.authenticator())
-      .grouped(User.guardMiddleware())
       .grouped("auth")
 
-    authRoutes.post("register", use: register)
+    authRoutes
+      .grouped(User.credentialsAuthenticator())
+      .post("register", use: register)
 
-    authRoutes.post("login", use: login)
+    authRoutes
+      .grouped(User.credentialsAuthenticator())
+      .post("login", use: login)
   }
 }

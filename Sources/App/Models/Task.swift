@@ -51,7 +51,7 @@ final class Task: Model, Content {
         self.createdAt = nil
         self.updatedAt = nil
     }
-    
+
     enum TaskStatus: String, Codable {
         case notStarted, inProgress, finished, delayed
     }
@@ -59,7 +59,7 @@ final class Task: Model, Content {
     enum TaskPriority: String, Codable {
         case low, medium, high, urgent
     }
-    
+
     struct Migration: AsyncMigration {
         func prepare(on database: Database) async throws {
             let todoStatus = try await database.enum("todoStatus")
@@ -76,7 +76,7 @@ final class Task: Model, Content {
                 .case("urgent")
                 .create()
 
-            try await database.schema("todos")
+            try await database.schema("tasks")
                 .id()
                 .field("task", .string, .required)
                 .field("due", .datetime)
