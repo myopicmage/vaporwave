@@ -1,4 +1,5 @@
 import Fluent
+import JWT
 import Vapor
 
 extension User {
@@ -12,16 +13,15 @@ extension User {
       validations.add("password", as: String.self, is: .count(12...))
     }
   }
+}
 
-  func generateToken() throws -> UserToken {
-    try .init(
-      value: [UInt8].random(count: 16).base64,
-      userID: self.requireID()
-    )
+extension User: SessionAuthenticatable {
+  var sessionID: String {
+    self.username
   }
 }
 
-extension User: ModelAuthenticatable {
+extension User: ModelAuthenticatable, ModelCredentialsAuthenticatable {
   static let usernameKey = \User.$username
   static let passwordHashKey = \User.$password
 
@@ -30,12 +30,24 @@ extension User: ModelAuthenticatable {
   }
 }
 
-extension UserToken: ModelTokenAuthenticatable {
-  static let valueKey = \UserToken.$value
-  static let userKey = \UserToken.$user
+let expirationTime: TimeInterval = 60 * 15
 
-  var isValid: Bool {
-    true
+struct UserToken: Content, Authenticatable, JWTPayload {
+  var expiration: ExpirationClaim
+  var userId: UUID
+
+  init(userId: UUID) {
+    self.userId = userId
+    self.expiration = ExpirationClaim(value: Date().addingTimeInterval(expirationTime))
+  }
+
+  init(user: User) throws {
+    self.userId = try user.requireID()
+    self.expiration = ExpirationClaim(value: Date().addingTimeInterval(expirationTime))
+  }
+
+  func verify(using signer: JWTSigner) throws {
+    try self.expiration.verifyNotExpired()
   }
 }
 

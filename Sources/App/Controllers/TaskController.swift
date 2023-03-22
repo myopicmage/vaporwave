@@ -4,8 +4,8 @@ import Vapor
 struct TaskController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let tasks = routes
-            .grouped(UserTokenAuthenticator())
-            .grouped(User.guardMiddleware())
+            .grouped(UserToken.authenticator())
+            .grouped(UserToken.guardMiddleware())
             .grouped("tasks")
 
         tasks.get(use: index)
