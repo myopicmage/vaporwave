@@ -40,10 +40,12 @@ final class User: Model, Content {
     self.firstName = firstName
     self.lastName = lastName
   }
+}
 
+extension User {
   struct Migration: AsyncMigration {
     func prepare(on database: Database) async throws {
-      try await database.schema("users")
+      try await database.schema(User.schema)
         .id()
         .field("username", .string, .required)
         .field("password", .string, .required)
@@ -56,7 +58,7 @@ final class User: Model, Content {
     }
 
     func revert(on database: Database) async throws {
-      try await database.schema("users").delete()
+      try await database.schema(User.schema).delete()
     }
   }
 }

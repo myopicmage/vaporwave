@@ -41,7 +41,6 @@ final class Task: Model, Content {
         notes: String? = nil,
         priority: TaskPriority = .medium
     ) {
-
         self.id = id
         self.task = task
         self.due = due
@@ -59,6 +58,9 @@ final class Task: Model, Content {
     enum TaskPriority: String, Codable {
         case low, medium, high, urgent
     }
+}
+
+extension Task {
 
     struct Migration: AsyncMigration {
         func prepare(on database: Database) async throws {
@@ -76,7 +78,7 @@ final class Task: Model, Content {
                 .case("urgent")
                 .create()
 
-            try await database.schema("tasks")
+            try await database.schema(Task.schema)
                 .id()
                 .field("task", .string, .required)
                 .field("due", .datetime)
@@ -90,7 +92,7 @@ final class Task: Model, Content {
         }
 
         func revert(on database: Database) async throws {
-            try await database.schema("todos").delete()
+            try await database.schema(Task.schema).delete()
             try await database.enum("todoStatus").delete()
             try await database.enum("todoPriority").delete()
         }
