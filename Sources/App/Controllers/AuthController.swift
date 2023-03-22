@@ -44,9 +44,11 @@ struct AuthController: RouteCollection {
     let authRoutes = routes
       .grouped("auth")
 
-    authRoutes
-      .grouped(User.credentialsAuthenticator())
-      .post("register", use: register)
+    if let allowRegister = Environment.get("ALLOW_REGISTER"), allowRegister == "true" {
+      authRoutes
+        .grouped(User.credentialsAuthenticator())
+        .post("register", use: register)
+    }
 
     authRoutes
       .grouped(User.credentialsAuthenticator())

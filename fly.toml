@@ -1,25 +1,15 @@
-# fly.toml file generated for trackertracker on 2023-03-20T13:10:43-04:00
-
 app = "trackertracker"
-kill_signal = "SIGINT"
-kill_timeout = 5
-primary_region = "den"
-processes = []
 
-[env]
+[build]
+  builder = "heroku/builder:22"
+  buildpacks = ["https://cnb-shim.herokuapp.com/v1/vapor/vapor"]
 
-[experimental]
-auto_rollback = true
+[processes]
+  app = "Run serve --env production --hostname 0.0.0.0 --port 8080"
 
 [[services]]
   internal_port = 8080
-  processes = ["app"]
   protocol = "tcp"
-  script_checks = []
-  [services.concurrency]
-    hard_limit = 25
-    soft_limit = 20
-    type = "connections"
 
   [[services.ports]]
     force_https = true
@@ -29,19 +19,3 @@ auto_rollback = true
   [[services.ports]]
     handlers = ["tls", "http"]
     port = 443
-
-  [[services.tcp_checks]]
-    grace_period = "1s"
-    interval = "15s"
-    restart_limit = 0
-    timeout = "2s"
-
-  [[services.http_checks]]
-    interval = 10000
-    grace_period = "5s"
-    method = "get"
-    path = "/up"
-    protocol = "http"
-    restart_limit = 0
-    timeout = 2000
-    tls_skip_verify = false
