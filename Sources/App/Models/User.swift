@@ -55,6 +55,11 @@ extension User {
         .field("updated_at", .datetime)
         .unique(on: "username")
         .create()
+
+      // testing user
+      let user = try User(username: "testme", password: Bcrypt.hash("testmetestmetestme"))
+
+      try await user.save(on: database)
     }
 
     func revert(on database: Database) async throws {

@@ -28,6 +28,8 @@ struct TaskController: RouteCollection {
       throw Abort(.notFound)
     }
 
+    try await task.$category.load(on: req.db)
+
     return task
   }
 

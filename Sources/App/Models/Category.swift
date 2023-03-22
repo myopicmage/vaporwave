@@ -22,7 +22,7 @@ final class Category: Model, Content {
 
   struct Migration: AsyncMigration {
     func prepare(on database: Database) async throws {
-      try await database.schema("categories")
+      try await database.schema(Category.schema)
         .id()
         .field("name", .string, .required)
         .create()

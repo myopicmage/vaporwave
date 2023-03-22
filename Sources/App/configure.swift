@@ -9,10 +9,9 @@ import Vapor
 public func configure(_ app: Application) async throws {
   // uncomment to serve files from /Public folder
   // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+  app.logger.debug("Environment detected: \(app.environment.name)")
 
-  app.logger.info("Environment detected: \(app.environment.name)")
-
-  app.logger.info("Setting up JWT")
+  app.logger.debug("Setting up JWT")
 
   guard let secretKey = Environment.get("JWT_SECRET") else {
     app.logger.error("Unable to load JWT key")
@@ -33,11 +32,11 @@ public func configure(_ app: Application) async throws {
   )
   app.middleware.use(CORSMiddleware(configuration: corsConfig), at: .beginning)
 
-  app.logger.info("Setting up database")
+  app.logger.debug("Setting up database")
 
   switch app.environment {
   case .production:
-    app.logger.info("Setting up postgres")
+    app.logger.debug("Setting up postgres")
 
     app.logger.debug("Looking for database url")
 
@@ -50,23 +49,23 @@ public func configure(_ app: Application) async throws {
 
     try app.databases.use(.postgres(url: databaseURL), as: .psql)
   default:
-    app.logger.info("Setting up sqlite")
+    app.logger.debug("Setting up sqlite")
     app.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
   }
 
-  app.logger.info("Adding migrations")
+  app.logger.debug("Adding migrations")
 
   app.migrations.add(Category.Migration())
   app.migrations.add(Task.Migration())
   app.migrations.add(User.Migration())
 
-  app.logger.info("Attempting to run migrations")
+  app.logger.debug("Attempting to run migrations")
   try await app.autoMigrate()
 
-  app.logger.info("Migrations run. Adding leaf.")
+  app.logger.debug("Migrations run. Adding leaf.")
 
   app.views.use(.leaf)
 
-  app.logger.info("Registering routes.")
+  app.logger.debug("Registering routes.")
   try routes(app)
 }

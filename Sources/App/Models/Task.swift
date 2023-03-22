@@ -39,9 +39,9 @@ final class Task: Model, Content {
     due: Date? = nil,
     status: TaskStatus = .notStarted,
     notes: String? = nil,
-    priority: TaskPriority = .medium
+    priority: TaskPriority = .medium,
+    categoryId: UUID? = nil
   ) {
-    self.id = id
     self.task = task
     self.due = due
     self.status = status
@@ -49,6 +49,7 @@ final class Task: Model, Content {
     self.priority = priority
     self.createdAt = nil
     self.updatedAt = nil
+    self.$category.id = categoryId
   }
 
   enum TaskStatus: String, Codable {
