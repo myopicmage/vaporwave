@@ -41,8 +41,7 @@ struct AuthController: RouteCollection {
   }
 
   func boot(routes: RoutesBuilder) throws {
-    let authRoutes = routes
-      .grouped("auth")
+    let authRoutes = routes.grouped("auth")
 
     if let allowRegister = Environment.get("ALLOW_REGISTER"), allowRegister == "true" {
       authRoutes

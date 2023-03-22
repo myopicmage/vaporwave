@@ -44,4 +44,3 @@ struct UserToken: Content, Authenticatable, JWTPayload {
     try self.expiration.verifyNotExpired()
   }
 }
-
