@@ -6,8 +6,8 @@ func routes(_ app: Application) throws {
         return try await req.view.render("index", ["title": "Hello Vapor!"])
     }
 
-    app.get("hello") { req async -> String in
-        "Hello, world!"
+    app.get("up") { req -> HTTPStatus in
+        .ok
     }
 
     try app.register(collection: TaskController())
